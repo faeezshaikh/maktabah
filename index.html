@@ -249,6 +249,43 @@ body.lights-off .book:hover{filter:drop-shadow(0 30px 28px rgba(0,0,0,.8)) brigh
   text-shadow:0 2px 6px #000;
 }
 .book:hover .plate{opacity:1;transform:translateX(-50%) translateY(0)}
+/* reading status ribbons */
+.ribbon-done{
+  position:absolute;top:-3px;left:8px;z-index:3;width:18px;height:32px;
+  background:linear-gradient(180deg,#f0d388,#b08a3c);
+  clip-path:polygon(0 0,100% 0,100% 100%,50% 76%,0 100%);
+  display:flex;align-items:flex-start;justify-content:center;
+  font-size:11px;font-weight:700;color:#2a1b06;padding-top:5px;
+  box-shadow:0 3px 6px rgba(0,0,0,.45);
+}
+.ribbon-queue{
+  position:absolute;top:-3px;left:32px;z-index:3;width:18px;height:28px;
+  background:linear-gradient(180deg,#8a2f26,#5c1b15);
+  clip-path:polygon(0 0,100% 0,100% 100%,50% 78%,0 100%);
+  display:flex;align-items:flex-start;justify-content:center;
+  font-size:10px;font-weight:600;color:#f3ddba;padding-top:4px;
+  box-shadow:0 3px 6px rgba(0,0,0,.45);
+}
+/* unread: faint shrink-wrap sheen */
+.book.unread .cover{box-shadow:inset 0 0 0 1px rgba(255,255,255,.14), inset 3px 0 6px rgba(255,255,255,.14), inset -3px 0 8px rgba(0,0,0,.35)}
+.book.unread .gloss{
+  position:absolute;inset:0;z-index:2;pointer-events:none;border-radius:2px 6px 6px 2px;
+  background:linear-gradient(160deg,rgba(255,255,255,.14) 0%,transparent 35%,transparent 70%,rgba(255,255,255,.06) 100%);
+}
+/* queue shelf */
+.shelf.queue-shelf{
+  background:linear-gradient(180deg,rgba(212,168,83,.05),transparent 70%);
+  border-radius:6px 6px 0 0;
+}
+.shelf-label{
+  position:absolute;top:10px;left:50%;transform:translateX(-50%);
+  font-size:9px;letter-spacing:.4em;text-transform:uppercase;color:var(--brass);
+  white-space:nowrap;opacity:.95;display:flex;align-items:center;gap:12px;
+}
+.shelf-label::before,.shelf-label::after{
+  content:"";width:44px;height:1px;background:linear-gradient(90deg,transparent,var(--brass-dim));
+}
+.shelf-label::after{background:linear-gradient(90deg,var(--brass-dim),transparent)}
 /* drag & drop */
 .book.dragging{opacity:.35;filter:grayscale(.4) drop-shadow(0 6px 10px rgba(0,0,0,.4))}
 .book.drop-left::before,.book.drop-right::after{
@@ -341,6 +378,24 @@ footer a:hover{color:var(--brass)}
   box-shadow:0 10px 26px rgba(212,168,83,.25);
 }
 #m-open:hover{transform:translateY(-2px);box-shadow:0 16px 34px rgba(212,168,83,.4)}
+#m-meta{
+  margin-top:16px;font-size:11.5px;letter-spacing:.08em;color:var(--ink-dim);
+  display:flex;gap:16px;flex-wrap:wrap;
+}
+#m-meta b{color:var(--brass);font-weight:500}
+.track-row{margin-top:16px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.track-btn{
+  padding:9px 16px;border-radius:30px;border:1px solid rgba(212,168,83,.5);
+  background:rgba(212,168,83,.08);color:var(--brass);cursor:pointer;
+  font-size:10.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;transition:.25s;
+  font-family:'Inter',sans-serif;
+}
+.track-btn:hover{background:rgba(212,168,83,.18);transform:translateY(-1px)}
+#m-done-date{
+  padding:8px 10px;border-radius:8px;border:1px solid rgba(212,168,83,.3);
+  background:rgba(0,0,0,.35);color:var(--ink);font-family:'Inter',sans-serif;font-size:12px;
+  color-scheme:dark;
+}
 .m-actions{margin-top:14px;display:flex;gap:18px;align-items:center}
 #m-edit{
   background:none;border:none;color:var(--brass-dim);cursor:pointer;
@@ -433,7 +488,10 @@ footer a:hover{color:var(--brass)}
     <span class="count" id="count"></span> volumes · drag books to re-arrange · pull the lamp cord ·
     <a id="sound-toggle" title="Toggle sound effects">sound: on</a> ·
     <a id="refresh-covers" title="Re-fetch cover art">refresh covers</a> ·
-    <a id="reset-order" title="Restore the original book order">reset order</a>
+    <a id="reset-order" title="Restore the original book order">reset order</a> ·
+    <a id="export-data" title="Download your library data (reading log, queue, edits) as a file">export</a> ·
+    <a id="import-data" title="Restore library data from a file">import</a>
+    <input type="file" id="import-file" accept="application/json,.json" style="display:none">
   </footer>
 </div>
 
@@ -447,7 +505,13 @@ footer a:hover{color:var(--brass)}
       <div id="m-title"></div>
       <div id="m-author"></div>
       <p id="m-desc"></p>
+      <div id="m-meta"></div>
       <a id="m-open" target="_blank" rel="noopener">Open the summary <span>→</span></a>
+      <div class="track-row">
+        <button id="m-queue" class="track-btn">Read next</button>
+        <input type="date" id="m-done-date" title="Completion date">
+        <button id="m-done" class="track-btn">Mark completely read</button>
+      </div>
       <div class="m-actions">
         <button id="m-edit">Edit this book</button>
         <button id="m-remove">Remove from shelf</button>
@@ -537,22 +601,10 @@ const BOOKS = [
  cover:"https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcSXpb6CGQBVn2fJooc9eLVYd41deWjZA7v5Zp7s7d1k8qHE1TwsriIfykOhayek6qkgeyDvCIe7iX2WvnrT0LcBHRpHxILCu-ueFY4XDob48_FsluBiClmoHtwpHCBMMt2polpA2to&usqp=CAc",
  d:"Wealth isn't a line, it's a ladder: six levels, each 10× the last — and each demanding a different strategy to climb.",
  c1:"#123a2a", c2:"#0a2018", tc:"#dfc98e"},
- {t:"2029: The End of America", a:"Porter Stansberry", url:"https://faeezshaikh.github.io/2029-End-of-Civilization/",
- cover:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRKLadLRZOeqz8EgMScmHSyk7CGw7CIpUgKPILuvrGssw&s=10",
- d:"A polemic on the dollar's endgame — why the author dates a monetary reset to 2029, and the gold-land-and-businesses playbook he prescribes.",
- c1:"#111113", c2:"#2e2306", tc:"#e3c06a"},
-  {t:"The New Money Strategy", a:"Brandon van der Kolk", url:"https://faeezshaikh.github.io/new_money/",
- cover:"https://encrypted-tbn2.gstatic.com/shopping?q=tbn:ANd9GcS0lS2zY3TGmbj-y0YY-t1hEXyQI2IFTqS2bZlrumSzm6PKq9GvNJ9JqTM0OJBJSG5nqcJsfOQRuwyceyVXzujh0i4VGEt7AwU7uD8euQRS&usqp=CAc",
- c1:"#1f2d4a", c2:"#0d1526", tc:"#e7d9b0"},
-  {t:"The Joys of Compounding", a:"Gautam Baid, CFA", url:"https://faeezshaikh.github.io/joys_of_compounding/",
- cover:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSwRnR6yVgL1BwMuWsB0YkbGHaj35kxSuTuMANAIVFwAg&s=10",
- c1:"#143a33", c2:"#081d19", tc:"#dcc98c"},
-  {t:"Influence", a:"Robert B. Cialdini, PhD", url:"https://faeezshaikh.github.io/influence/",
- cover:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQdwAaIkXnFsQ-8W6pQt6tjqXZoZJSArwMNsqgFTHZyEg&s=10",
- c1:"#2d1a3e", c2:"#150b1f", tc:"#e5d3ee"},
-  {t:"How to Win Friends & Influence People", a:"Dale Carnegie", url:"https://faeezshaikh.github.io/how_to_win_friends_and_influence_people/",
- cover:"https://encrypted-tbn3.gstatic.com/shopping?q=tbn:ANd9GcSFXfC_QKmRRDjhyOKebcfLje0uxjoCts3a8FWjlwOil27Pz5vsi66DB5YV1Gdffxuk5UQB686pQ1Ur9AbO_QU5jEcI9t_Q4NgHhbf3umoClSRg75Hc8BxxsA&usqp=CAc",
- c1:"#4a2a12", c2:"#241306", tc:"#f0dcae"},
+  {t:"2029: The End of America", a:"Porter Stansberry", url:"https://faeezshaikh.github.io/2029-End-of-Civilization/",
+   gq:'intitle:"The End of America" inauthor:Stansberry',
+   c1:"#111113", c2:"#2e2306", tc:"#e3c06a",
+   d:"A polemic on the dollar's endgame — why the author dates a monetary reset to 2029, and the gold-land-and-businesses playbook he prescribes."},
   {t:"A Latticework of Worldly Wisdom", a:"Munger & Buffett", url:"https://faeezshaikh.github.io/wisdom/",
    c1:"#26221c", c2:"#121009", tc:"#d9b568", noCover:true, badge:"House Edition",
    d:"The sayings of Charlie Munger and Warren Buffett, the ideas beneath them, and the W.I.S.E. framework to remember and use them."}
@@ -643,6 +695,22 @@ sndLink.addEventListener('click', ()=>{
 });
 renderSnd();
 
+/* ---------- reading log & queue ---------- */
+function loadJSON(key, fallback){ try{ return JSON.parse(localStorage.getItem(key)) ?? fallback; }catch(e){ return fallback; } }
+const rlog = loadJSON('readingLog', {});          // { okey: {o: lastOpenedISO, c: completedISO} }
+let readQueue = loadJSON('readQueue', []);        // [okey, okey, ...] in queue order
+function saveLog(){ try{ localStorage.setItem('readingLog', JSON.stringify(rlog)); }catch(e){} }
+function saveQueue(){ try{ localStorage.setItem('readQueue', JSON.stringify(readQueue)); }catch(e){} }
+function logOf(b){ return rlog[b.okey] || {}; }
+function fmtDate(iso){ return new Date(iso).toLocaleDateString(undefined,{year:'numeric',month:'short',day:'numeric'}); }
+function fmtAgo(iso){
+  const d = Math.floor((Date.now() - new Date(iso).getTime()) / 86400000);
+  if(d <= 0) return 'today';
+  if(d === 1) return 'yesterday';
+  if(d < 30) return d + ' days ago';
+  return fmtDate(iso);
+}
+
 /* ---------- custom shelf order ---------- */
 function loadOrder(){ try{ return JSON.parse(localStorage.getItem('shelfOrder')||'null'); }catch(e){ return null; } }
 function saveOrder(){
@@ -690,11 +758,20 @@ function wireDrag(el, b){
     e.preventDefault();
     const r=el.getBoundingClientRect();
     const before = (e.clientX - r.left) < r.width/2;
-    const from = BOOKS.indexOf(dragBook);
-    BOOKS.splice(from,1);
-    let to = BOOKS.indexOf(b) + (before?0:1);
-    BOOKS.splice(to,0,dragBook);
-    saveOrder();
+    const qFrom = readQueue.indexOf(dragBook.okey), qTo = readQueue.indexOf(b.okey);
+    if(qFrom > -1 && qTo > -1){
+      // both on the Reading Next shelf → reorder the queue
+      readQueue.splice(qFrom,1);
+      const to = readQueue.indexOf(b.okey) + (before?0:1);
+      readQueue.splice(to,0,dragBook.okey);
+      saveQueue();
+    } else {
+      const from = BOOKS.indexOf(dragBook);
+      BOOKS.splice(from,1);
+      const to = BOOKS.indexOf(b) + (before?0:1);
+      BOOKS.splice(to,0,dragBook);
+      saveOrder();
+    }
     sfx.drop();
     renderShelves();
   });
@@ -729,6 +806,9 @@ function makeBookEl(b,i){
   el.style.setProperty('--c2', b.c2);
   el.style.setProperty('--tc', b.tc);
   el.style.setProperty('--tilt', (Math.sin(i*3.7)*4).toFixed(1));
+  const lg = logOf(b);
+  const qi = readQueue.indexOf(b.okey);
+  if(!lg.o && !lg.c) el.classList.add('unread');
   el.innerHTML = `
     ${b.badge?`<div class="badge">${b.badge}</div>`:''}
     <div class="spine3d"></div>
@@ -740,6 +820,9 @@ function makeBookEl(b,i){
       </div>
     </div>
     <img class="art" alt="" loading="lazy">
+    <div class="gloss"></div>
+    ${lg.c?`<div class="ribbon-done" title="Completely read ${fmtDate(lg.c)}">✓</div>`:''}
+    ${qi>-1?`<div class="ribbon-queue" title="Reading queue #${qi+1}">${qi+1}</div>`:''}
     <div class="plate">${b.t}</div>`;
   el.addEventListener('click', ()=>openBook(b));
   el.addEventListener('keydown', e=>{ if(e.key==='Enter'||e.key===' '){e.preventDefault();openBook(b);} });
@@ -760,15 +843,41 @@ function makeAddSlot(){
 function renderShelves(){
   bookcase.innerHTML='';
   const per = booksPerShelf();
-  const total = BOOKS.length + 1;           // + the add slot
+  // prune queue entries whose books no longer exist
+  readQueue = readQueue.filter(k=>BOOKS.some(b=>b.okey===k));
+  const queued = readQueue.map(k=>BOOKS.find(b=>b.okey===k));
+  const rest = BOOKS.filter(b=>!readQueue.includes(b.okey));
+
+  // "Reading Next" shelf (or shelves) on top
+  let qidx = 0, firstQ = true;
+  while(qidx < queued.length){
+    const shelf = document.createElement('div');
+    shelf.className='shelf queue-shelf';
+    if(firstQ){
+      const lab = document.createElement('div');
+      lab.className='shelf-label'; lab.textContent='Reading Next';
+      shelf.appendChild(lab); firstQ = false;
+    }
+    for(let k=0; k<per && qidx<queued.length; k++, qidx++){
+      const b = queued[qidx];
+      shelf.appendChild(makeBookEl(b, qidx));
+      resolveCover(b);
+    }
+    bookcase.appendChild(shelf);
+    const plank = document.createElement('div'); plank.className='plank';
+    bookcase.appendChild(plank);
+  }
+
+  // the rest of the collection + add slot
+  const total = rest.length + 1;
   let idx = 0;
   while(idx < total){
     const shelf = document.createElement('div');
     shelf.className='shelf';
     for(let k=0; k<per && idx<total; k++, idx++){
-      if(idx < BOOKS.length){
-        const b = BOOKS[idx];
-        shelf.appendChild(makeBookEl(b, idx));
+      if(idx < rest.length){
+        const b = rest[idx];
+        shelf.appendChild(makeBookEl(b, idx+3));
         resolveCover(b);
       } else {
         shelf.appendChild(makeAddSlot());
@@ -849,6 +958,17 @@ document.getElementById('refresh-covers').addEventListener('click', ()=>{
 /* ---------- book preview modal ---------- */
 const veil = document.getElementById('veil');
 let current=null;
+function refreshTrack(b){
+  const lg = logOf(b);
+  const qi = readQueue.indexOf(b.okey);
+  document.getElementById('m-meta').innerHTML =
+    `<span>Last opened: <b>${lg.o ? fmtAgo(lg.o) : 'never'}</b></span>` +
+    `<span>Completely read: <b>${lg.c ? fmtDate(lg.c) : 'not yet'}</b></span>` +
+    (qi>-1 ? `<span>Queue position: <b>#${qi+1}</b></span>` : '');
+  document.getElementById('m-queue').textContent = qi>-1 ? '✕ Remove from queue' : '🔖 Read next';
+  document.getElementById('m-done').textContent = lg.c ? 'Re-mark as read' : 'Mark completely read';
+  document.getElementById('m-done-date').value = new Date().toISOString().slice(0,10);
+}
 function openBook(b){
   current=b;
   b.el.classList.add('flying');
@@ -857,6 +977,7 @@ function openBook(b){
   document.getElementById('m-desc').textContent = b.d || 'An interactive summary from the collection.';
   document.getElementById('m-open').href = b.url;
   document.getElementById('m-remove').style.display = b.mine ? 'inline-block' : 'none';
+  refreshTrack(b);
   const mc = document.getElementById('m-cover');
   mc.style.setProperty('--c1', b.c1);
   mc.style.setProperty('--c2', b.c2);
@@ -899,6 +1020,66 @@ document.getElementById('m-edit').addEventListener('click', ()=>{
   const b = current;
   closeVeil(veil);
   setTimeout(()=>openAdd(b), 200);
+});
+/* record "last opened" whenever the summary is launched */
+document.getElementById('m-open').addEventListener('click', ()=>{
+  if(!current) return;
+  rlog[current.okey] = Object.assign(logOf(current), {o: new Date().toISOString()});
+  saveLog();
+  refreshTrack(current);
+  renderShelves();   // clears the 'unread' sheen
+});
+/* reading queue toggle */
+document.getElementById('m-queue').addEventListener('click', ()=>{
+  if(!current) return;
+  const i = readQueue.indexOf(current.okey);
+  if(i>-1) readQueue.splice(i,1);
+  else readQueue.push(current.okey);
+  saveQueue();
+  sfx.chime();
+  renderShelves();
+  refreshTrack(current);
+});
+/* mark completely read (backdatable) */
+document.getElementById('m-done').addEventListener('click', ()=>{
+  if(!current) return;
+  const v = document.getElementById('m-done-date').value;
+  const iso = v ? new Date(v+'T12:00:00').toISOString() : new Date().toISOString();
+  rlog[current.okey] = Object.assign(logOf(current), {c: iso});
+  saveLog();
+  const i = readQueue.indexOf(current.okey);   // finished → leaves the queue
+  if(i>-1){ readQueue.splice(i,1); saveQueue(); }
+  sfx.chime();
+  renderShelves();
+  refreshTrack(current);
+});
+
+/* ---------- export / import library data ---------- */
+const DATA_KEYS = ['myBooks','bookOverrides','shelfOrder','readingLog','readQueue','lightsOff','soundOn'];
+document.getElementById('export-data').addEventListener('click', ()=>{
+  const out = {app:'al-maktabah', exported:new Date().toISOString(), data:{}};
+  DATA_KEYS.forEach(k=>{ const v=localStorage.getItem(k); if(v!==null) out.data[k]=v; });
+  const blob = new Blob([JSON.stringify(out,null,2)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'al-maktabah-data.json';
+  a.click();
+  URL.revokeObjectURL(a.href);
+});
+document.getElementById('import-data').addEventListener('click', ()=> document.getElementById('import-file').click());
+document.getElementById('import-file').addEventListener('change', e=>{
+  const f = e.target.files[0];
+  if(!f) return;
+  const rd = new FileReader();
+  rd.onload = ()=>{
+    try{
+      const j = JSON.parse(rd.result);
+      if(!j || j.app!=='al-maktabah' || !j.data) throw new Error('bad file');
+      DATA_KEYS.forEach(k=>{ if(k in j.data) localStorage.setItem(k, j.data[k]); });
+      location.reload();
+    }catch(err){ alert('That does not look like an Al Maktabah export file.'); }
+  };
+  rd.readAsText(f);
 });
 
 /* ---------- add / edit a book ---------- */
