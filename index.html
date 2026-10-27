@@ -1,14 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
-
-<head>
+<html lang="en"><head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Al Maktabah — Interactive Book Summaries</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link
-    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap"
-    rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&amp;family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet">
   <style>
     :root {
       --wood-1: #3a2318;
@@ -1154,8 +1150,7 @@
       <a id="sound-toggle" title="Toggle sound effects">sound: on</a> ·
       <a id="refresh-covers" title="Re-fetch cover art">refresh covers</a> ·
       <a id="reset-order" title="Restore the original book order">reset order</a> ·
-      <a id="export-html"
-        title="Download a complete, publish-ready index.html with all books, covers and reading history baked in — drop it in your GitHub repo">export
+      <a id="export-html" title="Download a complete, publish-ready index.html with all books, covers and reading history baked in — drop it in your GitHub repo">export
         html</a> ·
       <a id="export-data" title="Download your library data (reading log, queue, edits) as a file">export data</a> ·
       <a id="import-data" title="Restore library data from a file">import data</a>
@@ -1236,85 +1231,188 @@
        cover → direct image URL, overrides everything
        ============================================================ */
     /*__BOOKS_START__*/
-    const BOOKS = [
-      {
-        t: "The 48 Laws of Power", a: "Robert Greene", url: "https://faeezshaikh.github.io/48_laws_of_power/",
-        isbn: "9780140280197",
-        c1: "#191414", c2: "#3d0d0d", tc: "#e8d9b8",
-        d: "Three thousand years of power distilled into 48 ruthless, amoral laws — from courtiers, con artists, generals and kings."
-      },
-      {
-        t: "The Art of War", a: "Sun Tzu", url: "https://faeezshaikh.github.io/art_of_war/",
-        isbn: "9781590302255",
-        c1: "#1c1b18", c2: "#6e1310", tc: "#f0e4c8",
-        d: "The 2,500-year-old manual on strategy: win without fighting, know yourself and your enemy, and shape the ground before the battle."
-      },
-      {
-        t: "When", a: "Daniel H. Pink", url: "https://faeezshaikh.github.io/When/",
-        isbn: "9780735210622", gq: 'intitle:"When The Scientific Secrets of Perfect Timing" inauthor:Pink',
-        c1: "#f4ede0", c2: "#d9c9a8", tc: "#c2452d",
-        d: "Timing is a science, not an art. Your day has a peak, a trough and a rebound — and almost everything goes better when you respect them."
-      },
-      {
-        t: "Who Gets In and Why", a: "Jeffrey Selingo", url: "http://faeezshaikh.github.io/who-gets-in-and-why/",
-        isbn: "9781982116293",
-        c1: "#14263d", c2: "#0c1623", tc: "#f2e8d5",
-        d: "A year inside three college admissions offices — what actually decides who gets in, and how families should really play the game."
-      },
-      {
-        t: "The Warren Buffett Way", a: "Robert G. Hagstrom", url: "https://faeezshaikh.github.io/warren-buffet-way/",
-        isbn: "9781118503256",
-        c1: "#0e2c24", c2: "#081a15", tc: "#dec98a",
-        d: "Buffett's complete playbook: buy wonderful businesses within your circle of competence, at a margin of safety — then hold."
-      },
-      {
-        t: "Common Stocks and Uncommon Profits", a: "Philip A. Fisher", url: "https://faeezshaikh.github.io/common-stocks-uncommon-profits/",
-        isbn: "9780471445500", gq: 'intitle:"Common Stocks and Uncommon Profits" inauthor:"Philip Fisher"',
-        c1: "#4a1f18", c2: "#2a100c", tc: "#ecd9ae",
-        d: "Fisher's fifteen points and the art of 'scuttlebutt' — how to find the rare growth company worth holding for decades."
-      },
-      {
-        t: "The Education of a Value Investor", a: "Guy Spier", url: "https://faeezshaikh.github.io/Education-of-a-Value-Investor/",
-        isbn: "9781137278814",
-        c1: "#223a2c", c2: "#101d15", tc: "#e9ddbd",
-        d: "A Gordon Gekko wannabe's transformation into a true value investor — and the inner game of integrity, environment and heroes."
-      },
-      {
-        t: "The Deficit Myth", a: "Stephanie Kelton", url: "https://faeezshaikh.github.io/deficit-myth/",
-        isbn: "9781541736184",
-        c1: "#0f3e46", c2: "#082228", tc: "#f0e9d2",
-        d: "Modern Monetary Theory's boldest case: a currency-issuing government can't go broke — the real limit is inflation, not deficits."
-      },
-      {
-        t: "Debunkery", a: "Ken Fisher", url: "https://faeezshaikh.github.io/Debunkery/",
-        isbn: "9780470285350", gq: 'intitle:Debunkery inauthor:"Ken Fisher"',
-        c1: "#7d1d1d", c2: "#3d0e0e", tc: "#f4e8cf",
-        d: "Fifty market myths taken apart one by one — the comfortable beliefs that quietly cost investors the most."
-      },
-      {
-        t: "The Wealth Ladder", a: "Nick Maggiulli", url: "https://faeezshaikh.github.io/wealth_ladder/",
-        cover: "https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcSXpb6CGQBVn2fJooc9eLVYd41deWjZA7v5Zp7s7d1k8qHE1TwsriIfykOhayek6qkgeyDvCIe7iX2WvnrT0LcBHRpHxILCu-ueFY4XDob48_FsluBiClmoHtwpHCBMMt2polpA2to&usqp=CAc",
-        d: "Wealth isn't a line, it's a ladder: six levels, each 10× the last — and each demanding a different strategy to climb.",
-        c1: "#123a2a", c2: "#0a2018", tc: "#dfc98e"
-      },
-      {
-        t: "2029: The End of America", a: "Porter Stansberry", url: "https://faeezshaikh.github.io/2029-End-of-Civilization/",
-        gq: 'intitle:"The End of America" inauthor:Stansberry',
-        c1: "#111113", c2: "#2e2306", tc: "#e3c06a",
-        d: "A polemic on the dollar's endgame — why the author dates a monetary reset to 2029, and the gold-land-and-businesses playbook he prescribes."
-      },
-      {
-        t: "The New Money Strategy", a: "Brandon van der Kolk", url: "https://faeezshaikh.github.io/new_money/",
-        cover: "https://encrypted-tbn2.gstatic.com/shopping?q=tbn:ANd9GcS0lS2zY3TGmbj-y0YY-t1hEXyQI2IFTqS2bZlrumSzm6PKq9GvNJ9JqTM0OJBJSG5nqcJsfOQRuwyceyVXzujh0i4VGEt7AwU7uD8euQRS&usqp=CAc",
-        c1: "#1f2d4a", c2: "#0d1526", tc: "#e7d9b0"
-      },
-      {
-        t: "A Latticework of Worldly Wisdom", a: "Munger & Buffett", url: "https://faeezshaikh.github.io/wisdom/",
-        c1: "#26221c", c2: "#121009", tc: "#d9b568", noCover: true, badge: "House Edition",
-        d: "The sayings of Charlie Munger and Warren Buffett, the ideas beneath them, and the W.I.S.E. framework to remember and use them."
-      }
-    ];
-    /*__BOOKS_END__*/
+const BOOKS = [
+ {
+  "t": "Debunkery",
+  "a": "Ken Fisher",
+  "url": "https://faeezshaikh.github.io/Debunkery/",
+  "isbn": "9780470285350",
+  "gq": "intitle:Debunkery inauthor:\"Ken Fisher\"",
+  "cover": "https://covers.openlibrary.org/b/isbn/9780470285350-L.jpg?default=false",
+  "d": "Fifty market myths taken apart one by one — the comfortable beliefs that quietly cost investors the most.",
+  "c1": "#7d1d1d",
+  "c2": "#3d0e0e",
+  "tc": "#f4e8cf"
+ },
+ {
+  "t": "The Warren Buffett Way",
+  "a": "Robert G. Hagstrom",
+  "url": "https://faeezshaikh.github.io/warren-buffet-way/",
+  "isbn": "9781118503256",
+  "cover": "https://covers.openlibrary.org/b/isbn/9781118503256-L.jpg?default=false",
+  "d": "Buffett's complete playbook: buy wonderful businesses within your circle of competence, at a margin of safety — then hold.",
+  "c1": "#0e2c24",
+  "c2": "#081a15",
+  "tc": "#dec98a"
+ },
+ {
+  "t": "Common Stocks and Uncommon Profits",
+  "a": "Philip A. Fisher",
+  "url": "https://faeezshaikh.github.io/common-stocks-uncommon-profits/",
+  "isbn": "9780471445500",
+  "gq": "intitle:\"Common Stocks and Uncommon Profits\" inauthor:\"Philip Fisher\"",
+  "cover": "https://covers.openlibrary.org/b/isbn/9780471445500-L.jpg?default=false",
+  "d": "Fisher's fifteen points and the art of 'scuttlebutt' — how to find the rare growth company worth holding for decades.",
+  "c1": "#4a1f18",
+  "c2": "#2a100c",
+  "tc": "#ecd9ae"
+ },
+ {
+  "t": "21st Century Monetary Policy: The Federal Reserve from the Great Inflation to COVID-19",
+  "a": "Ben S. Bernanke",
+  "url": "https://faeezshaikh.github.io/21st_century_monitory_policy/",
+  "cover": "https://m.media-amazon.com/images/I/61VR3ldhGVL._SY522_.jpg",
+  "c1": "#1f2d4a",
+  "c2": "#0d1526",
+  "tc": "#e7d9b0"
+ },
+ {
+  "t": "The Education of a Value Investor",
+  "a": "Guy Spier",
+  "url": "https://faeezshaikh.github.io/Education-of-a-Value-Investor/",
+  "isbn": "9781137278814",
+  "cover": "https://covers.openlibrary.org/b/isbn/9781137278814-L.jpg?default=false",
+  "d": "A Gordon Gekko wannabe's transformation into a true value investor — and the inner game of integrity, environment and heroes.",
+  "c1": "#223a2c",
+  "c2": "#101d15",
+  "tc": "#e9ddbd"
+ },
+ {
+  "t": "When",
+  "a": "Daniel H. Pink",
+  "url": "https://faeezshaikh.github.io/When/",
+  "isbn": "9780735210622",
+  "gq": "intitle:\"When The Scientific Secrets of Perfect Timing\" inauthor:Pink",
+  "cover": "https://covers.openlibrary.org/b/isbn/9780735210622-L.jpg?default=false",
+  "d": "Timing is a science, not an art. Your day has a peak, a trough and a rebound — and almost everything goes better when you respect them.",
+  "c1": "#f4ede0",
+  "c2": "#d9c9a8",
+  "tc": "#c2452d"
+ },
+ {
+  "t": "The Wealth Ladder",
+  "a": "Nick Maggiulli",
+  "url": "https://faeezshaikh.github.io/wealth_ladder/",
+  "cover": "https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcSXpb6CGQBVn2fJooc9eLVYd41deWjZA7v5Zp7s7d1k8qHE1TwsriIfykOhayek6qkgeyDvCIe7iX2WvnrT0LcBHRpHxILCu-ueFY4XDob48_FsluBiClmoHtwpHCBMMt2polpA2to&usqp=CAc",
+  "d": "Wealth isn't a line, it's a ladder: six levels, each 10× the last — and each demanding a different strategy to climb.",
+  "c1": "#123a2a",
+  "c2": "#0a2018",
+  "tc": "#dfc98e"
+ },
+ {
+  "t": "The Deficit Myth",
+  "a": "Stephanie Kelton",
+  "url": "https://faeezshaikh.github.io/deficit-myth/",
+  "isbn": "9781541736184",
+  "cover": "https://covers.openlibrary.org/b/isbn/9781541736184-L.jpg?default=false",
+  "d": "Modern Monetary Theory's boldest case: a currency-issuing government can't go broke — the real limit is inflation, not deficits.",
+  "c1": "#0f3e46",
+  "c2": "#082228",
+  "tc": "#f0e9d2"
+ },
+ {
+  "t": "2029: The End of America",
+  "a": "Porter Stansberry",
+  "url": "https://faeezshaikh.github.io/2029-End-of-Civilization/",
+  "gq": "intitle:\"The End of America\" inauthor:Stansberry",
+  "cover": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRKLadLRZOeqz8EgMScmHSyk7CGw7CIpUgKPILuvrGssw&s=10",
+  "d": "A polemic on the dollar's endgame — why the author dates a monetary reset to 2029, and the gold-land-and-businesses playbook he prescribes.",
+  "c1": "#111113",
+  "c2": "#2e2306",
+  "tc": "#e3c06a"
+ },
+ {
+  "t": "The 48 Laws of Power",
+  "a": "Robert Greene",
+  "url": "https://faeezshaikh.github.io/48_laws_of_power/",
+  "isbn": "9780140280197",
+  "cover": "https://covers.openlibrary.org/b/isbn/9780140280197-L.jpg?default=false",
+  "d": "Three thousand years of power distilled into 48 ruthless, amoral laws — from courtiers, con artists, generals and kings.",
+  "c1": "#191414",
+  "c2": "#3d0d0d",
+  "tc": "#e8d9b8"
+ },
+ {
+  "t": "Who Gets In and Why",
+  "a": "Jeffrey Selingo",
+  "url": "http://faeezshaikh.github.io/who-gets-in-and-why/",
+  "isbn": "9781982116293",
+  "cover": "https://covers.openlibrary.org/b/isbn/9781982116293-L.jpg?default=false",
+  "d": "A year inside three college admissions offices — what actually decides who gets in, and how families should really play the game.",
+  "c1": "#14263d",
+  "c2": "#0c1623",
+  "tc": "#f2e8d5"
+ },
+ {
+  "t": "A Latticework of Worldly Wisdom",
+  "a": "Munger & Buffett",
+  "url": "https://faeezshaikh.github.io/wisdom/",
+  "d": "The sayings of Charlie Munger and Warren Buffett, the ideas beneath them, and the W.I.S.E. framework to remember and use them.",
+  "c1": "#26221c",
+  "c2": "#121009",
+  "tc": "#d9b568",
+  "badge": "House Edition",
+  "noCover": true
+ },
+ {
+  "t": "The Art of War",
+  "a": "Sun Tzu",
+  "url": "https://faeezshaikh.github.io/art_of_war/",
+  "isbn": "9781590302255",
+  "cover": "https://covers.openlibrary.org/b/isbn/9781590302255-L.jpg?default=false",
+  "d": "The 2,500-year-old manual on strategy: win without fighting, know yourself and your enemy, and shape the ground before the battle.",
+  "c1": "#1c1b18",
+  "c2": "#6e1310",
+  "tc": "#f0e4c8"
+ },
+ {
+  "t": "The New Money Strategy",
+  "a": "Brandon van der Kolk",
+  "url": "https://faeezshaikh.github.io/new_money/",
+  "cover": "https://encrypted-tbn2.gstatic.com/shopping?q=tbn:ANd9GcS0lS2zY3TGmbj-y0YY-t1hEXyQI2IFTqS2bZlrumSzm6PKq9GvNJ9JqTM0OJBJSG5nqcJsfOQRuwyceyVXzujh0i4VGEt7AwU7uD8euQRS&usqp=CAc",
+  "c1": "#1f2d4a",
+  "c2": "#0d1526",
+  "tc": "#e7d9b0"
+ },
+ {
+  "t": "How to Win Friends & Influence People",
+  "a": "Dale Carnegie",
+  "url": "https://faeezshaikh.github.io/how_to_win_friends_and_influence_people/",
+  "cover": "https://encrypted-tbn3.gstatic.com/shopping?q=tbn:ANd9GcSFXfC_QKmRRDjhyOKebcfLje0uxjoCts3a8FWjlwOil27Pz5vsi66DB5YV1Gdffxuk5UQB686pQ1Ur9AbO_QU5jEcI9t_Q4NgHhbf3umoClSRg75Hc8BxxsA&usqp=CAc",
+  "c1": "#4a2a12",
+  "c2": "#241306",
+  "tc": "#f0dcae"
+ },
+ {
+  "t": "Influence",
+  "a": "Robert B. Cialdini, PhD",
+  "url": "https://faeezshaikh.github.io/influence/",
+  "cover": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQdwAaIkXnFsQ-8W6pQt6tjqXZoZJSArwMNsqgFTHZyEg&s=10",
+  "c1": "#2d1a3e",
+  "c2": "#150b1f",
+  "tc": "#e5d3ee"
+ },
+ {
+  "t": "The Joys of Compounding",
+  "a": "Gautam Baid, CFA",
+  "url": "https://faeezshaikh.github.io/joys_of_compounding/",
+  "cover": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSwRnR6yVgL1BwMuWsB0YkbGHaj35kxSuTuMANAIVFwAg&s=10",
+  "c1": "#143a33",
+  "c2": "#081d19",
+  "tc": "#dcc98c"
+ }
+];
+/*__BOOKS_END__*/
 
     const CACHE_VER = 'cover-v2:';
     const PALETTES = [
@@ -1404,8 +1502,8 @@
 
     /* ---------- reading log & queue ---------- */
     function loadJSON(key, fallback) { try { return JSON.parse(localStorage.getItem(key)) ?? fallback; } catch (e) { return fallback; } }
-    const rlog = loadJSON('readingLog', /*__RLOG_START__*/{}/*__RLOG_END__*/);   // { okey: {o,c} }
-    let readQueue = loadJSON('readQueue', /*__RQ_START__*/[]/*__RQ_END__*/);     // [okey, ...]
+    const rlog = loadJSON('readingLog', /*__RLOG_START__*/{"The Joys of Compounding":{"c":"2026-10-23T17:00:00.000Z"},"The Education of a Value Investor":{"o":"2026-10-23T23:07:10.815Z"}}/*__RLOG_END__*/);   // { okey: {o,c} }
+    let readQueue = loadJSON('readQueue', /*__RQ_START__*/["Influence","The Joys of Compounding"]/*__RQ_END__*/);     // [okey, ...]
     function saveLog() { try { localStorage.setItem('readingLog', JSON.stringify(rlog)); } catch (e) { } }
     function saveQueue() { try { localStorage.setItem('readQueue', JSON.stringify(readQueue)); } catch (e) { } }
     function logOf(b) { return rlog[b.okey] || {}; }
@@ -1948,7 +2046,4 @@
     applyOrder();
     renderShelves();
     lastPer = booksPerShelf();
-  </script>
-</body>
-
-</html>
+  </script></body></html>
