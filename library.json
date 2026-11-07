@@ -1,6 +1,6 @@
 {
   "app": "al-maktabah",
-  "updated": "2026-11-07T17:45:19.007Z",
+  "updated": "2026-11-07T17:46:56.331Z",
   "books": [
     {
       "t": "Debunkery",
@@ -153,6 +153,15 @@
       "c1": "#1f2d4a",
       "c2": "#0d1526",
       "tc": "#e7d9b0"
+    },
+    {
+      "t": "How to Win Friends & Influence People",
+      "a": "Dale Carnegie",
+      "url": "https://faeezshaikh.github.io/how_to_win_friends_and_influence_people/",
+      "cover": "https://encrypted-tbn3.gstatic.com/shopping?q=tbn:ANd9GcSFXfC_QKmRRDjhyOKebcfLje0uxjoCts3a8FWjlwOil27Pz5vsi66DB5YV1Gdffxuk5UQB686pQ1Ur9AbO_QU5jEcI9t_Q4NgHhbf3umoClSRg75Hc8BxxsA&usqp=CAc",
+      "c1": "#2d1a3e",
+      "c2": "#150b1f",
+      "tc": "#e5d3ee"
     }
   ],
   "readingLog": {
