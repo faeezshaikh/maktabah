@@ -1,6 +1,6 @@
 {
   "app": "al-maktabah",
-  "updated": "2026-11-07T17:49:41.663Z",
+  "updated": "2026-11-07T17:51:39.960Z",
   "books": [
     {
       "t": "Debunkery",
@@ -180,6 +180,15 @@
       "c1": "#5a1a1a",
       "c2": "#2a0b0b",
       "tc": "#f2e3c6"
+    },
+    {
+      "t": "Influence",
+      "a": "Robert B. Cialdini, PhD",
+      "url": "https://faeezshaikh.github.io/influence/",
+      "cover": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQdwAaIkXnFsQ-8W6pQt6tjqXZoZJSArwMNsqgFTHZyEg&s=10",
+      "c1": "#2e2e22",
+      "c2": "#161610",
+      "tc": "#e0d4a8"
     }
   ],
   "readingLog": {
