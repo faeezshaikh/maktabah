@@ -1,6 +1,6 @@
 {
   "app": "al-maktabah",
-  "updated": "2026-11-07T17:59:55.302Z",
+  "updated": "2026-11-07T20:24:39.374Z",
   "books": [
     {
       "t": "Debunkery",
@@ -189,6 +189,15 @@
       "c1": "#2e2e22",
       "c2": "#161610",
       "tc": "#e0d4a8"
+    },
+    {
+      "t": "Investing in U.S. Financial History",
+      "a": "Mark J. Higgins, CFA, CFP",
+      "url": "https://faeezshaikh.github.io/investing_in_us_financial_history/",
+      "cover": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQa_LnKhKhQm_1KVPtGBBxA_GDLWwQMDdVZcCh0LbxG0Q&s=10",
+      "c1": "#1f2d4a",
+      "c2": "#0d1526",
+      "tc": "#e7d9b0"
     }
   ],
   "readingLog": {
