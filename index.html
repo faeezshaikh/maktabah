@@ -1,10 +1,19 @@
 <!DOCTYPE html>
-<html lang="en"><head>
+<html lang="en">
+
+<head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Al Maktabah — Interactive Book Summaries</title>
+  <!-- favicon: an open gilded book under lamplight, inlined so the app stays one file -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%23eccb7c'/%3E%3Cstop offset='1' stop-color='%23b98f3e'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='14' fill='%231a110a'/%3E%3Ccircle cx='32' cy='16' r='17' fill='%23ffca7a' opacity='.14'/%3E%3Cpath d='M32 21.5c-5.2-3.8-12.3-4.9-18.5-3.9v27.9c6.2-1 13.3.1 18.5 3.9 5.2-3.8 12.3-4.9 18.5-3.9V17.6c-6.2-1-13.3.1-18.5 3.9z' fill='url(%23g)'/%3E%3Cpath d='M32 21.5v27.9' stroke='%231a110a' stroke-width='2.6'/%3E%3Cpath d='M18.5 24.5c4.5-.4 9 .4 13.5 2.9M18.5 30.5c4.5-.4 9 .4 13.5 2.9' stroke='%231a110a' stroke-width='1.4' opacity='.45' fill='none'/%3E%3Cpath d='M45.5 24.5c-4.5-.4-9 .4-13.5 2.9M45.5 30.5c-4.5-.4-9 .4-13.5 2.9' stroke='%231a110a' stroke-width='1.4' opacity='.45' fill='none'/%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&amp;family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap"
+    rel="stylesheet">
+  <!-- GoatCounter analytics: privacy-friendly visit counting, no cookies -->
+  <script data-goatcounter="https://faeezshaikh.goatcounter.com/count" async
+    src="https://gc.zgo.at/count.js"></script>
   <style>
     :root {
       --wood-1: #3a2318;
@@ -1150,7 +1159,10 @@
       <a id="sound-toggle" title="Toggle sound effects">sound: on</a> ·
       <a id="refresh-covers" title="Re-fetch cover art">refresh covers</a> ·
       <a id="reset-order" title="Restore the original book order">reset order</a> ·
-      <a id="export-html" title="Download a complete, publish-ready index.html with all books, covers and reading history baked in — drop it in your GitHub repo">export
+      <a id="gh-sync" title="Connect this page to your GitHub repo so changes save automatically">github sync</a>
+      <span id="sync-status" style="color:var(--brass);letter-spacing:.12em;white-space:nowrap"></span> ·
+      <a id="export-html"
+        title="Download a complete, publish-ready index.html with all books, covers and reading history baked in — drop it in your GitHub repo">export
         html</a> ·
       <a id="export-data" title="Download your library data (reading log, queue, edits) as a file">export data</a> ·
       <a id="import-data" title="Restore library data from a file">import data</a>
@@ -1217,10 +1229,40 @@
     </div>
   </div>
 
+  <!-- github sync settings modal -->
+  <div id="gh-veil" class="veil" role="dialog" aria-modal="true">
+    <div id="gh-panel" class="panel" style="max-width:500px;width:100%;padding:40px 44px">
+      <button class="x-close" data-close="gh-veil" aria-label="Close">✕</button>
+      <h2 style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:28px;color:var(--ink);margin-bottom:4px">GitHub sync</h2>
+      <div style="font-size:12px;color:var(--ink-dim);line-height:1.6;margin-bottom:16px">
+        Your library lives in <b style="color:var(--brass)">library.json</b> in your repo — every change commits
+        automatically. Create a <b style="color:var(--brass)">fine-grained personal access token</b>
+        (GitHub → Settings → Developer settings → Fine-grained tokens) limited to this one repo with
+        <b style="color:var(--brass)">Contents: Read and write</b>. The token never leaves this browser.
+      </div>
+      <label style="display:block;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--brass-dim);margin:14px 0 6px">Repository (owner/name)</label>
+      <input id="gh-repo" placeholder="faeezshaikh/al-maktabah"
+        style="width:100%;padding:11px 14px;border-radius:8px;border:1px solid rgba(212,168,83,.3);background:rgba(0,0,0,.35);color:var(--ink);font-family:'Inter',sans-serif;font-size:14px;outline:none">
+      <label style="display:block;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--brass-dim);margin:14px 0 6px">Branch</label>
+      <input id="gh-branch" value="main"
+        style="width:100%;padding:11px 14px;border-radius:8px;border:1px solid rgba(212,168,83,.3);background:rgba(0,0,0,.35);color:var(--ink);font-family:'Inter',sans-serif;font-size:14px;outline:none">
+      <label style="display:block;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--brass-dim);margin:14px 0 6px">Personal access token</label>
+      <input id="gh-token" type="password" placeholder="github_pat_…  (blank = view-only on this device)"
+        style="width:100%;padding:11px 14px;border-radius:8px;border:1px solid rgba(212,168,83,.3);background:rgba(0,0,0,.35);color:var(--ink);font-family:'Inter',sans-serif;font-size:14px;outline:none">
+      <div id="gh-msg" style="margin-top:14px;font-size:12px;color:var(--ink-dim);min-height:16px;line-height:1.5"></div>
+      <button id="gh-save" class="track-btn" style="margin-top:12px;width:100%;padding:13px">Connect &amp; sync</button>
+      <button id="gh-off" class="track-btn" style="margin-top:10px;width:100%;padding:10px;border-color:rgba(154,90,74,.5);color:#c08a78">Disconnect sync on this device</button>
+    </div>
+  </div>
+
   <script>
     /* Snapshot of this page's own source, captured before any rendering.
        Used by "export html" to generate a publish-ready index.html. */
     const PAGE_SRC = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+
+    /* ---------- GitHub sync state (functions live near the export section) ---------- */
+    let SYNC = null;           // {repo:'owner/name', branch, token} — loaded in init
+    let remoteMode = false;    // true when library.json is the source of truth
 
     /* ============================================================
        TO ADD A BOOK PERMANENTLY: copy any block below, change the
@@ -1231,188 +1273,85 @@
        cover → direct image URL, overrides everything
        ============================================================ */
     /*__BOOKS_START__*/
-const BOOKS = [
- {
-  "t": "Debunkery",
-  "a": "Ken Fisher",
-  "url": "https://faeezshaikh.github.io/Debunkery/",
-  "isbn": "9780470285350",
-  "gq": "intitle:Debunkery inauthor:\"Ken Fisher\"",
-  "cover": "https://covers.openlibrary.org/b/isbn/9780470285350-L.jpg?default=false",
-  "d": "Fifty market myths taken apart one by one — the comfortable beliefs that quietly cost investors the most.",
-  "c1": "#7d1d1d",
-  "c2": "#3d0e0e",
-  "tc": "#f4e8cf"
- },
- {
-  "t": "The Warren Buffett Way",
-  "a": "Robert G. Hagstrom",
-  "url": "https://faeezshaikh.github.io/warren-buffet-way/",
-  "isbn": "9781118503256",
-  "cover": "https://covers.openlibrary.org/b/isbn/9781118503256-L.jpg?default=false",
-  "d": "Buffett's complete playbook: buy wonderful businesses within your circle of competence, at a margin of safety — then hold.",
-  "c1": "#0e2c24",
-  "c2": "#081a15",
-  "tc": "#dec98a"
- },
- {
-  "t": "Common Stocks and Uncommon Profits",
-  "a": "Philip A. Fisher",
-  "url": "https://faeezshaikh.github.io/common-stocks-uncommon-profits/",
-  "isbn": "9780471445500",
-  "gq": "intitle:\"Common Stocks and Uncommon Profits\" inauthor:\"Philip Fisher\"",
-  "cover": "https://covers.openlibrary.org/b/isbn/9780471445500-L.jpg?default=false",
-  "d": "Fisher's fifteen points and the art of 'scuttlebutt' — how to find the rare growth company worth holding for decades.",
-  "c1": "#4a1f18",
-  "c2": "#2a100c",
-  "tc": "#ecd9ae"
- },
- {
-  "t": "21st Century Monetary Policy: The Federal Reserve from the Great Inflation to COVID-19",
-  "a": "Ben S. Bernanke",
-  "url": "https://faeezshaikh.github.io/21st_century_monitory_policy/",
-  "cover": "https://m.media-amazon.com/images/I/61VR3ldhGVL._SY522_.jpg",
-  "c1": "#1f2d4a",
-  "c2": "#0d1526",
-  "tc": "#e7d9b0"
- },
- {
-  "t": "The Education of a Value Investor",
-  "a": "Guy Spier",
-  "url": "https://faeezshaikh.github.io/Education-of-a-Value-Investor/",
-  "isbn": "9781137278814",
-  "cover": "https://covers.openlibrary.org/b/isbn/9781137278814-L.jpg?default=false",
-  "d": "A Gordon Gekko wannabe's transformation into a true value investor — and the inner game of integrity, environment and heroes.",
-  "c1": "#223a2c",
-  "c2": "#101d15",
-  "tc": "#e9ddbd"
- },
- {
-  "t": "When",
-  "a": "Daniel H. Pink",
-  "url": "https://faeezshaikh.github.io/When/",
-  "isbn": "9780735210622",
-  "gq": "intitle:\"When The Scientific Secrets of Perfect Timing\" inauthor:Pink",
-  "cover": "https://covers.openlibrary.org/b/isbn/9780735210622-L.jpg?default=false",
-  "d": "Timing is a science, not an art. Your day has a peak, a trough and a rebound — and almost everything goes better when you respect them.",
-  "c1": "#f4ede0",
-  "c2": "#d9c9a8",
-  "tc": "#c2452d"
- },
- {
-  "t": "The Wealth Ladder",
-  "a": "Nick Maggiulli",
-  "url": "https://faeezshaikh.github.io/wealth_ladder/",
-  "cover": "https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcSXpb6CGQBVn2fJooc9eLVYd41deWjZA7v5Zp7s7d1k8qHE1TwsriIfykOhayek6qkgeyDvCIe7iX2WvnrT0LcBHRpHxILCu-ueFY4XDob48_FsluBiClmoHtwpHCBMMt2polpA2to&usqp=CAc",
-  "d": "Wealth isn't a line, it's a ladder: six levels, each 10× the last — and each demanding a different strategy to climb.",
-  "c1": "#123a2a",
-  "c2": "#0a2018",
-  "tc": "#dfc98e"
- },
- {
-  "t": "The Deficit Myth",
-  "a": "Stephanie Kelton",
-  "url": "https://faeezshaikh.github.io/deficit-myth/",
-  "isbn": "9781541736184",
-  "cover": "https://covers.openlibrary.org/b/isbn/9781541736184-L.jpg?default=false",
-  "d": "Modern Monetary Theory's boldest case: a currency-issuing government can't go broke — the real limit is inflation, not deficits.",
-  "c1": "#0f3e46",
-  "c2": "#082228",
-  "tc": "#f0e9d2"
- },
- {
-  "t": "2029: The End of America",
-  "a": "Porter Stansberry",
-  "url": "https://faeezshaikh.github.io/2029-End-of-Civilization/",
-  "gq": "intitle:\"The End of America\" inauthor:Stansberry",
-  "cover": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRKLadLRZOeqz8EgMScmHSyk7CGw7CIpUgKPILuvrGssw&s=10",
-  "d": "A polemic on the dollar's endgame — why the author dates a monetary reset to 2029, and the gold-land-and-businesses playbook he prescribes.",
-  "c1": "#111113",
-  "c2": "#2e2306",
-  "tc": "#e3c06a"
- },
- {
-  "t": "The 48 Laws of Power",
-  "a": "Robert Greene",
-  "url": "https://faeezshaikh.github.io/48_laws_of_power/",
-  "isbn": "9780140280197",
-  "cover": "https://covers.openlibrary.org/b/isbn/9780140280197-L.jpg?default=false",
-  "d": "Three thousand years of power distilled into 48 ruthless, amoral laws — from courtiers, con artists, generals and kings.",
-  "c1": "#191414",
-  "c2": "#3d0d0d",
-  "tc": "#e8d9b8"
- },
- {
-  "t": "Who Gets In and Why",
-  "a": "Jeffrey Selingo",
-  "url": "http://faeezshaikh.github.io/who-gets-in-and-why/",
-  "isbn": "9781982116293",
-  "cover": "https://covers.openlibrary.org/b/isbn/9781982116293-L.jpg?default=false",
-  "d": "A year inside three college admissions offices — what actually decides who gets in, and how families should really play the game.",
-  "c1": "#14263d",
-  "c2": "#0c1623",
-  "tc": "#f2e8d5"
- },
- {
-  "t": "A Latticework of Worldly Wisdom",
-  "a": "Munger & Buffett",
-  "url": "https://faeezshaikh.github.io/wisdom/",
-  "d": "The sayings of Charlie Munger and Warren Buffett, the ideas beneath them, and the W.I.S.E. framework to remember and use them.",
-  "c1": "#26221c",
-  "c2": "#121009",
-  "tc": "#d9b568",
-  "badge": "House Edition",
-  "noCover": true
- },
- {
-  "t": "The Art of War",
-  "a": "Sun Tzu",
-  "url": "https://faeezshaikh.github.io/art_of_war/",
-  "isbn": "9781590302255",
-  "cover": "https://covers.openlibrary.org/b/isbn/9781590302255-L.jpg?default=false",
-  "d": "The 2,500-year-old manual on strategy: win without fighting, know yourself and your enemy, and shape the ground before the battle.",
-  "c1": "#1c1b18",
-  "c2": "#6e1310",
-  "tc": "#f0e4c8"
- },
- {
-  "t": "The New Money Strategy",
-  "a": "Brandon van der Kolk",
-  "url": "https://faeezshaikh.github.io/new_money/",
-  "cover": "https://encrypted-tbn2.gstatic.com/shopping?q=tbn:ANd9GcS0lS2zY3TGmbj-y0YY-t1hEXyQI2IFTqS2bZlrumSzm6PKq9GvNJ9JqTM0OJBJSG5nqcJsfOQRuwyceyVXzujh0i4VGEt7AwU7uD8euQRS&usqp=CAc",
-  "c1": "#1f2d4a",
-  "c2": "#0d1526",
-  "tc": "#e7d9b0"
- },
- {
-  "t": "How to Win Friends & Influence People",
-  "a": "Dale Carnegie",
-  "url": "https://faeezshaikh.github.io/how_to_win_friends_and_influence_people/",
-  "cover": "https://encrypted-tbn3.gstatic.com/shopping?q=tbn:ANd9GcSFXfC_QKmRRDjhyOKebcfLje0uxjoCts3a8FWjlwOil27Pz5vsi66DB5YV1Gdffxuk5UQB686pQ1Ur9AbO_QU5jEcI9t_Q4NgHhbf3umoClSRg75Hc8BxxsA&usqp=CAc",
-  "c1": "#4a2a12",
-  "c2": "#241306",
-  "tc": "#f0dcae"
- },
- {
-  "t": "Influence",
-  "a": "Robert B. Cialdini, PhD",
-  "url": "https://faeezshaikh.github.io/influence/",
-  "cover": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQdwAaIkXnFsQ-8W6pQt6tjqXZoZJSArwMNsqgFTHZyEg&s=10",
-  "c1": "#2d1a3e",
-  "c2": "#150b1f",
-  "tc": "#e5d3ee"
- },
- {
-  "t": "The Joys of Compounding",
-  "a": "Gautam Baid, CFA",
-  "url": "https://faeezshaikh.github.io/joys_of_compounding/",
-  "cover": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSwRnR6yVgL1BwMuWsB0YkbGHaj35kxSuTuMANAIVFwAg&s=10",
-  "c1": "#143a33",
-  "c2": "#081d19",
-  "tc": "#dcc98c"
- }
-];
-/*__BOOKS_END__*/
+    const BOOKS = [
+      {
+        t: "The 48 Laws of Power", a: "Robert Greene", url: "https://faeezshaikh.github.io/48_laws_of_power/",
+        isbn: "9780140280197",
+        c1: "#191414", c2: "#3d0d0d", tc: "#e8d9b8",
+        d: "Three thousand years of power distilled into 48 ruthless, amoral laws — from courtiers, con artists, generals and kings."
+      },
+      {
+        t: "The Art of War", a: "Sun Tzu", url: "https://faeezshaikh.github.io/art_of_war/",
+        isbn: "9781590302255",
+        c1: "#1c1b18", c2: "#6e1310", tc: "#f0e4c8",
+        d: "The 2,500-year-old manual on strategy: win without fighting, know yourself and your enemy, and shape the ground before the battle."
+      },
+      {
+        t: "When", a: "Daniel H. Pink", url: "https://faeezshaikh.github.io/When/",
+        isbn: "9780735210622", gq: 'intitle:"When The Scientific Secrets of Perfect Timing" inauthor:Pink',
+        c1: "#f4ede0", c2: "#d9c9a8", tc: "#c2452d",
+        d: "Timing is a science, not an art. Your day has a peak, a trough and a rebound — and almost everything goes better when you respect them."
+      },
+      {
+        t: "Who Gets In and Why", a: "Jeffrey Selingo", url: "http://faeezshaikh.github.io/who-gets-in-and-why/",
+        isbn: "9781982116293",
+        c1: "#14263d", c2: "#0c1623", tc: "#f2e8d5",
+        d: "A year inside three college admissions offices — what actually decides who gets in, and how families should really play the game."
+      },
+      {
+        t: "The Warren Buffett Way", a: "Robert G. Hagstrom", url: "https://faeezshaikh.github.io/warren-buffet-way/",
+        isbn: "9781118503256",
+        c1: "#0e2c24", c2: "#081a15", tc: "#dec98a",
+        d: "Buffett's complete playbook: buy wonderful businesses within your circle of competence, at a margin of safety — then hold."
+      },
+      {
+        t: "Common Stocks and Uncommon Profits", a: "Philip A. Fisher", url: "https://faeezshaikh.github.io/common-stocks-uncommon-profits/",
+        isbn: "9780471445500", gq: 'intitle:"Common Stocks and Uncommon Profits" inauthor:"Philip Fisher"',
+        c1: "#4a1f18", c2: "#2a100c", tc: "#ecd9ae",
+        d: "Fisher's fifteen points and the art of 'scuttlebutt' — how to find the rare growth company worth holding for decades."
+      },
+      {
+        t: "The Education of a Value Investor", a: "Guy Spier", url: "https://faeezshaikh.github.io/Education-of-a-Value-Investor/",
+        isbn: "9781137278814",
+        c1: "#223a2c", c2: "#101d15", tc: "#e9ddbd",
+        d: "A Gordon Gekko wannabe's transformation into a true value investor — and the inner game of integrity, environment and heroes."
+      },
+      {
+        t: "The Deficit Myth", a: "Stephanie Kelton", url: "https://faeezshaikh.github.io/deficit-myth/",
+        isbn: "9781541736184",
+        c1: "#0f3e46", c2: "#082228", tc: "#f0e9d2",
+        d: "Modern Monetary Theory's boldest case: a currency-issuing government can't go broke — the real limit is inflation, not deficits."
+      },
+      {
+        t: "Debunkery", a: "Ken Fisher", url: "https://faeezshaikh.github.io/Debunkery/",
+        isbn: "9780470285350", gq: 'intitle:Debunkery inauthor:"Ken Fisher"',
+        c1: "#7d1d1d", c2: "#3d0e0e", tc: "#f4e8cf",
+        d: "Fifty market myths taken apart one by one — the comfortable beliefs that quietly cost investors the most."
+      },
+      {
+        t: "The Wealth Ladder", a: "Nick Maggiulli", url: "https://faeezshaikh.github.io/wealth_ladder/",
+        cover: "https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcSXpb6CGQBVn2fJooc9eLVYd41deWjZA7v5Zp7s7d1k8qHE1TwsriIfykOhayek6qkgeyDvCIe7iX2WvnrT0LcBHRpHxILCu-ueFY4XDob48_FsluBiClmoHtwpHCBMMt2polpA2to&usqp=CAc",
+        d: "Wealth isn't a line, it's a ladder: six levels, each 10× the last — and each demanding a different strategy to climb.",
+        c1: "#123a2a", c2: "#0a2018", tc: "#dfc98e"
+      },
+      {
+        t: "2029: The End of America", a: "Porter Stansberry", url: "https://faeezshaikh.github.io/2029-End-of-Civilization/",
+        gq: 'intitle:"The End of America" inauthor:Stansberry',
+        c1: "#111113", c2: "#2e2306", tc: "#e3c06a",
+        d: "A polemic on the dollar's endgame — why the author dates a monetary reset to 2029, and the gold-land-and-businesses playbook he prescribes."
+      },
+      {
+        t: "The New Money Strategy", a: "Brandon van der Kolk", url: "https://faeezshaikh.github.io/new_money/",
+        cover: "https://encrypted-tbn2.gstatic.com/shopping?q=tbn:ANd9GcS0lS2zY3TGmbj-y0YY-t1hEXyQI2IFTqS2bZlrumSzm6PKq9GvNJ9JqTM0OJBJSG5nqcJsfOQRuwyceyVXzujh0i4VGEt7AwU7uD8euQRS&usqp=CAc",
+        c1: "#1f2d4a", c2: "#0d1526", tc: "#e7d9b0"
+      },
+      {
+        t: "A Latticework of Worldly Wisdom", a: "Munger & Buffett", url: "https://faeezshaikh.github.io/wisdom/",
+        c1: "#26221c", c2: "#121009", tc: "#d9b568", noCover: true, badge: "House Edition",
+        d: "The sayings of Charlie Munger and Warren Buffett, the ideas beneath them, and the W.I.S.E. framework to remember and use them."
+      }
+    ];
+    /*__BOOKS_END__*/
 
     const CACHE_VER = 'cover-v2:';
     const PALETTES = [
@@ -1502,10 +1441,10 @@ const BOOKS = [
 
     /* ---------- reading log & queue ---------- */
     function loadJSON(key, fallback) { try { return JSON.parse(localStorage.getItem(key)) ?? fallback; } catch (e) { return fallback; } }
-    const rlog = loadJSON('readingLog', /*__RLOG_START__*/{"The Joys of Compounding":{"c":"2026-10-23T17:00:00.000Z"},"The Education of a Value Investor":{"o":"2026-10-23T23:07:10.815Z"}}/*__RLOG_END__*/);   // { okey: {o,c} }
-    let readQueue = loadJSON('readQueue', /*__RQ_START__*/["Influence","The Joys of Compounding"]/*__RQ_END__*/);     // [okey, ...]
-    function saveLog() { try { localStorage.setItem('readingLog', JSON.stringify(rlog)); } catch (e) { } }
-    function saveQueue() { try { localStorage.setItem('readQueue', JSON.stringify(readQueue)); } catch (e) { } }
+    const rlog = loadJSON('readingLog', /*__RLOG_START__*/{}/*__RLOG_END__*/);   // { okey: {o,c} }
+    let readQueue = loadJSON('readQueue', /*__RQ_START__*/[]/*__RQ_END__*/);     // [okey, ...]
+    function saveLog() { try { localStorage.setItem('readingLog', JSON.stringify(rlog)); } catch (e) { } scheduleCommit(); }
+    function saveQueue() { try { localStorage.setItem('readQueue', JSON.stringify(readQueue)); } catch (e) { } scheduleCommit(); }
     function logOf(b) { return rlog[b.okey] || {}; }
     function fmtDate(iso) { return new Date(iso).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' }); }
     function fmtAgo(iso) {
@@ -1520,6 +1459,7 @@ const BOOKS = [
     function loadOrder() { try { return JSON.parse(localStorage.getItem('shelfOrder') || 'null'); } catch (e) { return null; } }
     function saveOrder() {
       try { localStorage.setItem('shelfOrder', JSON.stringify(BOOKS.map(b => b.okey))); } catch (e) { }
+      scheduleCommit();
     }
     function applyOrder() {
       const ord = loadOrder();
@@ -1781,7 +1721,7 @@ const BOOKS = [
       document.getElementById('m-author').textContent = b.a;
       document.getElementById('m-desc').textContent = b.d || 'An interactive summary from the collection.';
       document.getElementById('m-open').href = b.url;
-      document.getElementById('m-remove').style.display = b.mine ? 'inline-block' : 'none';
+      document.getElementById('m-remove').style.display = (b.mine || remoteMode) ? 'inline-block' : 'none';
       refreshTrack(b);
       const mc = document.getElementById('m-cover');
       mc.style.setProperty('--c1', b.c1);
@@ -1815,7 +1755,19 @@ const BOOKS = [
       if (e.key === 'Escape') document.querySelectorAll('.veil.show').forEach(closeVeil);
     });
     document.getElementById('m-remove').addEventListener('click', () => {
-      if (!current || !current.mine) return;
+      if (!current) return;
+      if (remoteMode) {
+        const i = BOOKS.indexOf(current);
+        if (i > -1) BOOKS.splice(i, 1);
+        const q = readQueue.indexOf(current.okey);
+        if (q > -1) { readQueue.splice(q, 1); }
+        delete rlog[current.okey];
+        scheduleCommit();
+        closeVeil(veil);
+        renderShelves();
+        return;
+      }
+      if (!current.mine) return;
       const arr = loadMyBooks();
       arr.splice(current.mineIndex, 1);
       saveMyBooks(arr);
@@ -1857,6 +1809,151 @@ const BOOKS = [
       sfx.chime();
       renderShelves();
       refreshTrack(current);
+    });
+
+    /* ---------- GitHub sync engine ---------- */
+    function bookData(b) {
+      const o = { t: b.t, a: b.a, url: b.url };
+      if (b.isbn) o.isbn = b.isbn;
+      if (b.gq) o.gq = b.gq;
+      const cov = b.cover || b.art;
+      if (cov) o.cover = cov;
+      if (b.d) o.d = b.d;
+      o.c1 = b.c1; o.c2 = b.c2; o.tc = b.tc;
+      if (b.badge) o.badge = b.badge;
+      if (b.noCover && !cov) o.noCover = true;
+      return o;
+    }
+    function libraryJSON() {
+      return JSON.stringify({
+        app: 'al-maktabah', updated: new Date().toISOString(),
+        books: BOOKS.map(bookData), readingLog: rlog, readQueue: readQueue
+      }, null, 2);
+    }
+    function setStatus(txt, isErr) {
+      const el = document.getElementById('sync-status');
+      el.textContent = txt;
+      el.style.color = isErr ? '#d07a60' : 'var(--brass)';
+    }
+    function ghApi() { return 'https://api.github.com/repos/' + SYNC.repo + '/contents/library.json'; }
+    function ghHeaders() {
+      const h = { Accept: 'application/vnd.github+json' };
+      if (SYNC.token) h.Authorization = 'Bearer ' + SYNC.token;
+      return h;
+    }
+    function b64(s) { return btoa(unescape(encodeURIComponent(s))); }
+    let commitT = null, committing = false, dirty = false;
+    function scheduleCommit() {
+      if (!SYNC || !SYNC.token || !remoteMode) return;   // only commit when the remote library is what we're editing
+      dirty = true;
+      setStatus('saving…');
+      clearTimeout(commitT);
+      commitT = setTimeout(doCommit, 1500);
+    }
+    async function doCommit() {
+      if (committing) { commitT = setTimeout(doCommit, 1000); return; }
+      committing = true; dirty = false;
+      try {
+        let sha = null;
+        const g = await fetch(ghApi() + '?ref=' + encodeURIComponent(SYNC.branch || 'main'), { headers: ghHeaders(), cache: 'no-store' });
+        if (g.ok) sha = (await g.json()).sha;
+        const body = {
+          message: 'Al Maktabah: library update',
+          content: b64(libraryJSON()),
+          branch: SYNC.branch || 'main'
+        };
+        if (sha) body.sha = sha;
+        const r = await fetch(ghApi(), { method: 'PUT', headers: ghHeaders(), body: JSON.stringify(body) });
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        setStatus(dirty ? 'saving…' : 'synced ✓');
+      } catch (e) {
+        setStatus('sync error — changes kept locally', true);
+      }
+      committing = false;
+      if (dirty) { clearTimeout(commitT); commitT = setTimeout(doCommit, 1000); }
+    }
+    function adoptLibrary(j) {
+      BOOKS.length = 0;
+      (j.books || []).forEach((b, i) => {
+        const p = PALETTES[i % PALETTES.length];
+        BOOKS.push(Object.assign({ c1: p[0], c2: p[1], tc: p[2] }, b, { okey: b.t }));
+      });
+      Object.keys(rlog).forEach(k => delete rlog[k]);
+      Object.assign(rlog, j.readingLog || {});
+      readQueue = Array.isArray(j.readQueue) ? j.readQueue : [];
+      remoteMode = true;
+    }
+    async function loadRemoteLibrary() {
+      SYNC = loadJSON('ghSync', null);
+      let txt = null;
+      // 1) with settings: read through the API (always fresh, works for private repos too)
+      if (SYNC && SYNC.repo) {
+        try {
+          const h = ghHeaders(); h.Accept = 'application/vnd.github.raw+json';
+          const r = await fetch(ghApi() + '?ref=' + encodeURIComponent(SYNC.branch || 'main'), { headers: h, cache: 'no-store' });
+          if (r.ok) txt = await r.text();
+        } catch (e) { }
+      }
+      // 2) no settings (a visitor): library.json served next to the page
+      if (txt === null) {
+        try {
+          const r = await fetch('library.json?ts=' + Date.now(), { cache: 'no-store' });
+          if (r.ok) txt = await r.text();
+        } catch (e) { }
+      }
+      if (txt === null) {
+        if (SYNC && SYNC.repo) setStatus('offline — local copy', true);
+        return;
+      }
+      try {
+        const j = JSON.parse(txt);
+        if (!j || !Array.isArray(j.books)) throw 0;
+        adoptLibrary(j);
+        setStatus(SYNC && SYNC.token ? 'synced ✓' : 'viewing');
+      } catch (e) { setStatus('library.json unreadable', true); }
+    }
+    /* settings panel */
+    const ghVeil = document.getElementById('gh-veil');
+    document.getElementById('gh-sync').addEventListener('click', () => {
+      const s = loadJSON('ghSync', null) || {};
+      document.getElementById('gh-repo').value = s.repo || '';
+      document.getElementById('gh-branch').value = s.branch || 'main';
+      document.getElementById('gh-token').value = s.token || '';
+      document.getElementById('gh-msg').textContent = '';
+      ghVeil.classList.add('show');
+      requestAnimationFrame(() => requestAnimationFrame(() => ghVeil.classList.add('in')));
+    });
+    document.getElementById('gh-save').addEventListener('click', async () => {
+      const repo = document.getElementById('gh-repo').value.trim().replace(/^https:\/\/github\.com\//, '').replace(/\/+$/, '');
+      const branch = document.getElementById('gh-branch').value.trim() || 'main';
+      const token = document.getElementById('gh-token').value.trim();
+      const msg = document.getElementById('gh-msg');
+      if (!/^[^\/\s]+\/[^\/\s]+$/.test(repo)) { msg.textContent = 'Repository must look like owner/name.'; return; }
+      SYNC = { repo, branch, token };
+      try { localStorage.setItem('ghSync', JSON.stringify(SYNC)); } catch (e) { }
+      msg.textContent = 'Checking repo…';
+      try {
+        const r = await fetch(ghApi() + '?ref=' + encodeURIComponent(branch), { headers: ghHeaders(), cache: 'no-store' });
+        if (r.ok) {
+          msg.textContent = 'Found library.json — loading it as the source of truth…';
+          setTimeout(() => location.reload(), 900);
+        } else if (r.status === 404) {
+          if (!token) { msg.textContent = 'No library.json there yet — a token is needed to create it.'; return; }
+          msg.textContent = 'No library.json yet — pushing your current library as the first commit…';
+          remoteMode = true;
+          await doCommit();
+          msg.textContent = 'Done! library.json created. Reloading…';
+          setTimeout(() => location.reload(), 900);
+        } else if (r.status === 401 || r.status === 403) {
+          msg.textContent = 'GitHub rejected the token (check its repo access and Contents permission).';
+        } else {
+          msg.textContent = 'GitHub answered HTTP ' + r.status + ' — check the repo name and branch.';
+        }
+      } catch (e) { msg.textContent = 'Could not reach GitHub — are you online?'; }
+    });
+    document.getElementById('gh-off').addEventListener('click', () => {
+      localStorage.removeItem('ghSync');
+      location.reload();
     });
 
     /* ---------- export the whole library as a publish-ready HTML file ---------- */
@@ -1973,6 +2070,14 @@ const BOOKS = [
         if (cov) b.cover = cov; else delete b.cover;
         if (d) b.d = d;
         b.art = null;
+        if (remoteMode) {
+          scheduleCommit();
+          sfx.chime();
+          renderShelves();
+          document.getElementById('gh-msg').textContent = '';
+          closeVeil(addVeil);
+          return;
+        }
         if (b.mine) {
           const arr = loadMyBooks();
           const e = { t, a, url }; if (cov) e.cover = cov; if (b.d) e.d = b.d;
@@ -1993,6 +2098,17 @@ const BOOKS = [
       const nb = { t, a, url };
       if (cov) nb.cover = cov;
       if (d) nb.d = d;
+      if (remoteMode) {
+        const p = PALETTES[BOOKS.length % PALETTES.length];
+        const book = Object.assign({ c1: p[0], c2: p[1], tc: p[2], okey: t }, nb);
+        BOOKS.push(book);
+        scheduleCommit();
+        sfx.chime();
+        renderShelves();
+        ['f-title', 'f-author', 'f-url', 'f-cover', 'f-desc'].forEach(id => document.getElementById(id).value = '');
+        closeVeil(addVeil);
+        return;
+      }
       const arr = loadMyBooks(); arr.push(nb); saveMyBooks(arr);
       const p = PALETTES[(arr.length - 1) % PALETTES.length];
       const book = Object.assign({ c1: p[0], c2: p[1], tc: p[2], mine: true, mineIndex: arr.length - 1, okey: t }, nb);
@@ -2043,7 +2159,13 @@ const BOOKS = [
       dust.appendChild(m);
     }
 
-    applyOrder();
-    renderShelves();
-    lastPer = booksPerShelf();
-  </script></body></html>
+    (async function init() {
+      await loadRemoteLibrary();        // library.json becomes the source of truth when available
+      if (!remoteMode) applyOrder();    // local-order fallback for the static/offline mode
+      renderShelves();
+      lastPer = booksPerShelf();
+    })();
+  </script>
+</body>
+
+</html>
