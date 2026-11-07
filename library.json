@@ -1,6 +1,6 @@
 {
   "app": "al-maktabah",
-  "updated": "2026-11-07T17:46:56.331Z",
+  "updated": "2026-11-07T17:48:25.643Z",
   "books": [
     {
       "t": "Debunkery",
@@ -162,6 +162,15 @@
       "c1": "#2d1a3e",
       "c2": "#150b1f",
       "tc": "#e5d3ee"
+    },
+    {
+      "t": "21st Century Monetary Policy: The Federal Reserve from the Great Inflation to COVID-19",
+      "a": "Ben S. Bernanke",
+      "url": "https://faeezshaikh.github.io/21st_century_monitory_policy/",
+      "cover": "https://m.media-amazon.com/images/I/61VR3ldhGVL._SY522_.jpg",
+      "c1": "#143a33",
+      "c2": "#081d19",
+      "tc": "#dcc98c"
     }
   ],
   "readingLog": {
