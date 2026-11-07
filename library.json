@@ -1,6 +1,6 @@
 {
   "app": "al-maktabah",
-  "updated": "2026-11-07T17:48:25.643Z",
+  "updated": "2026-11-07T17:49:41.663Z",
   "books": [
     {
       "t": "Debunkery",
@@ -171,6 +171,15 @@
       "c1": "#143a33",
       "c2": "#081d19",
       "tc": "#dcc98c"
+    },
+    {
+      "t": "The Joys of Compounding",
+      "a": "Gautam Baid, CFA",
+      "url": "https://faeezshaikh.github.io/joys_of_compounding/",
+      "cover": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSwRnR6yVgL1BwMuWsB0YkbGHaj35kxSuTuMANAIVFwAg&s=10",
+      "c1": "#5a1a1a",
+      "c2": "#2a0b0b",
+      "tc": "#f2e3c6"
     }
   ],
   "readingLog": {
