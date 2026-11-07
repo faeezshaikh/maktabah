@@ -1,6 +1,6 @@
 {
   "app": "al-maktabah",
-  "updated": "2026-11-07T17:52:05.382Z",
+  "updated": "2026-11-07T17:57:10.811Z",
   "books": [
     {
       "t": "Debunkery",
@@ -209,6 +209,9 @@
     },
     "2029: The End of America": {
       "o": "2026-11-07T17:52:03.643Z"
+    },
+    "The New Money Strategy": {
+      "o": "2026-11-07T17:57:09.069Z"
     }
   },
   "readQueue": []
