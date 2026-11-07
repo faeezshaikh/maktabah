@@ -1,6 +1,6 @@
 {
   "app": "al-maktabah",
-  "updated": "2026-11-07T20:24:39.374Z",
+  "updated": "2026-11-07T20:25:35.518Z",
   "books": [
     {
       "t": "Debunkery",
@@ -224,6 +224,9 @@
     },
     "A Latticework of Worldly Wisdom": {
       "o": "2026-11-07T17:59:53.600Z"
+    },
+    "Investing in U.S. Financial History": {
+      "o": "2026-11-07T20:25:33.534Z"
     }
   },
   "readQueue": []
