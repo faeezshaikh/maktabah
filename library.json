@@ -1,6 +1,6 @@
 {
   "app": "al-maktabah",
-  "updated": "2026-11-07T20:25:35.518Z",
+  "updated": "2026-11-12T02:46:01.322Z",
   "books": [
     {
       "t": "Debunkery",
@@ -229,5 +229,13 @@
       "o": "2026-11-07T20:25:33.534Z"
     }
   },
-  "readQueue": []
+  "readQueue": [],
+  "wishlist": [
+    {
+      "t": "Die with Zero",
+      "a": "",
+      "n": "faeezshaikh/maktabah",
+      "added": "2026-11-12T02:45:59.486Z"
+    }
+  ]
 }
