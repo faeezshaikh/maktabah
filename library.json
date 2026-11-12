@@ -1,6 +1,6 @@
 {
   "app": "al-maktabah",
-  "updated": "2026-11-12T02:46:01.322Z",
+  "updated": "2026-11-12T02:46:56.701Z",
   "books": [
     {
       "t": "Debunkery",
@@ -198,6 +198,16 @@
       "c1": "#1f2d4a",
       "c2": "#0d1526",
       "tc": "#e7d9b0"
+    },
+    {
+      "t": "Die with Zero",
+      "a": "Bill Perkins",
+      "url": "https://faeezshaikh.github.io/die_with_zero/#overview",
+      "cover": "https://encrypted-tbn3.gstatic.com/shopping?q=tbn:ANd9GcTO97uKKikQbu14ef-ETCp1xVuQqGRmhPQeLqeQvej6R1dU_kUN3sirBKu2178wbtguZEAdAIs_0DJk5XLsaheFGGilgEatZyy1vPcuyuT_OZRNsI9Z4-s5dsYcuBlWJnkOO9sXRac&usqp=CAc",
+      "d": "faeezshaikh/maktabah",
+      "c1": "#4a2a12",
+      "c2": "#241306",
+      "tc": "#f0dcae"
     }
   ],
   "readingLog": {
@@ -230,12 +240,5 @@
     }
   },
   "readQueue": [],
-  "wishlist": [
-    {
-      "t": "Die with Zero",
-      "a": "",
-      "n": "faeezshaikh/maktabah",
-      "added": "2026-11-12T02:45:59.486Z"
-    }
-  ]
+  "wishlist": []
 }
