@@ -593,6 +593,95 @@
       background: linear-gradient(90deg, var(--brass-dim), transparent)
     }
 
+    /* ---------- want-to-read: bookmark tab + ledger drawer ---------- */
+    #wl-tab{
+      position:fixed;right:0;top:40%;z-index:28;
+      display:flex;flex-direction:column;align-items:center;gap:10px;
+      padding:18px 9px 22px;cursor:pointer;user-select:none;
+      background:linear-gradient(90deg,#6e2a20,#4a1812);
+      border-radius:10px 0 0 10px;
+      border:1px solid rgba(212,168,83,.35);border-right:none;
+      box-shadow:-6px 8px 22px rgba(0,0,0,.55), inset 1px 1px 0 rgba(255,220,160,.18);
+      transform:translateX(3px);transition:transform .3s, box-shadow .3s;
+      -webkit-tap-highlight-color:transparent;
+    }
+    #wl-tab:hover{transform:translateX(0);box-shadow:-10px 10px 28px rgba(0,0,0,.65), inset 1px 1px 0 rgba(255,220,160,.22)}
+    #wl-tab .wl-label{
+      writing-mode:vertical-rl;font-size:10px;letter-spacing:.32em;text-transform:uppercase;
+      color:#f0d9ae;text-shadow:0 1px 2px rgba(0,0,0,.6);
+    }
+    #wl-tab .wl-count{
+      min-width:20px;height:20px;border-radius:10px;padding:0 5px;
+      background:linear-gradient(135deg,#eccb7c,#b98f3e);color:#241607;
+      font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;
+      box-shadow:0 2px 6px rgba(0,0,0,.5);
+    }
+    body.lights-off #wl-tab{filter:brightness(.6)}
+    #wl-scrim{
+      position:fixed;inset:0;z-index:34;background:rgba(5,3,2,.5);backdrop-filter:blur(3px);
+      opacity:0;pointer-events:none;transition:opacity .35s;
+    }
+    #wl-drawer{
+      position:fixed;top:0;right:0;bottom:0;z-index:36;
+      width:min(430px,94vw);
+      background:linear-gradient(200deg,#231509 0%,#160d06 60%,#120a05 100%);
+      border-left:1px solid rgba(212,168,83,.4);
+      box-shadow:-30px 0 80px rgba(0,0,0,.7);
+      transform:translateX(105%);transition:transform .45s cubic-bezier(.2,.9,.3,1.05);
+      display:flex;flex-direction:column;
+      padding:30px 28px 20px;
+    }
+    body.wl-open #wl-drawer{transform:translateX(0)}
+    body.wl-open #wl-scrim{opacity:1;pointer-events:auto}
+    .wl-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px}
+    .wl-kicker{font-size:9px;letter-spacing:.4em;text-transform:uppercase;color:var(--brass-dim);margin-bottom:6px}
+    .wl-head h2{font-family:'Cormorant Garamond',serif;font-weight:600;font-size:30px;color:var(--ink);line-height:1}
+    .wl-sub{margin-top:6px;font-size:11px;color:var(--ink-dim);letter-spacing:.08em}
+    #wl-close{position:static;font-size:22px}
+    .wl-form{border:1px dashed rgba(212,168,83,.3);border-radius:10px;padding:14px;margin-bottom:6px}
+    .wl-form input{
+      width:100%;padding:10px 12px;margin-bottom:8px;border-radius:7px;
+      border:1px solid rgba(212,168,83,.25);background:rgba(0,0,0,.35);color:var(--ink);
+      font-family:'Inter',sans-serif;font-size:13px;outline:none;transition:.25s;
+    }
+    .wl-form input:focus{border-color:var(--brass)}
+    .wl-form-row{display:flex;align-items:center;gap:14px}
+    #wl-cancel{font-size:11px;color:var(--ink-dim);text-decoration:underline dotted;cursor:pointer}
+    #wl-cancel:hover{color:var(--brass)}
+    #wl-list{flex:1;overflow-y:auto;margin-top:10px;padding-right:6px}
+    #wl-list::-webkit-scrollbar{width:6px}
+    #wl-list::-webkit-scrollbar-thumb{background:rgba(212,168,83,.3);border-radius:3px}
+    .wl-empty{
+      text-align:center;color:var(--ink-dim);font-size:13px;line-height:1.7;
+      padding:40px 20px;font-style:italic;
+    }
+    .wl-row{
+      display:flex;gap:12px;align-items:baseline;
+      padding:14px 4px;border-bottom:1px dotted rgba(212,168,83,.25);
+    }
+    .wl-num{
+      font-family:'Cormorant Garamond',serif;font-style:italic;font-size:15px;
+      color:var(--brass-dim);min-width:20px;text-align:right;
+    }
+    .wl-main{flex:1;min-width:0}
+    .wl-title{font-family:'Cormorant Garamond',serif;font-weight:600;font-size:17.5px;color:var(--ink);line-height:1.2}
+    .wl-author{font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--brass);margin-top:3px}
+    .wl-note{font-size:12px;font-style:italic;color:var(--ink-dim);margin-top:5px;line-height:1.5}
+    .wl-date{font-size:9px;letter-spacing:.1em;color:var(--ink-dim);opacity:.7;margin-top:5px;text-transform:uppercase}
+    .wl-acts{display:flex;flex-direction:column;gap:6px;opacity:0;transition:.3s}
+    .wl-row:hover .wl-acts{opacity:1}
+    .wl-act{
+      background:none;border:none;cursor:pointer;color:var(--brass-dim);
+      font-size:10px;letter-spacing:.12em;text-transform:uppercase;text-align:right;
+      font-family:'Inter',sans-serif;padding:0;transition:.2s;white-space:nowrap;
+    }
+    .wl-act:hover{color:var(--brass)}
+    .wl-act.del:hover{color:#d07a60}
+    @media (max-width:760px){
+      #wl-tab{top:auto;bottom:90px}
+      .wl-acts{opacity:1}
+    }
+
     /* drag & drop */
     .book.dragging {
       opacity: .35;
@@ -1229,6 +1318,33 @@
     </div>
   </div>
 
+  <!-- want-to-read bookmark tab + drawer -->
+  <div id="wl-tab" role="button" tabindex="0" title="Books awaiting their summaries">
+    <span class="wl-count" id="wl-count">0</span>
+    <span class="wl-label">Want to Read</span>
+  </div>
+  <div id="wl-scrim"></div>
+  <aside id="wl-drawer" aria-label="Want to read list">
+    <div class="wl-head">
+      <div>
+        <div class="wl-kicker">The Waiting List</div>
+        <h2>Want to Read</h2>
+        <div class="wl-sub">Titles whose summaries are yet to join the shelf</div>
+      </div>
+      <button id="wl-close" class="x-close" aria-label="Close">✕</button>
+    </div>
+    <div class="wl-form">
+      <input id="wl-t" placeholder="Title *">
+      <input id="wl-a" placeholder="Author">
+      <input id="wl-n" placeholder="Note — why it's on the list (optional)">
+      <div class="wl-form-row">
+        <button id="wl-save" class="track-btn">Add to list</button>
+        <a id="wl-cancel" style="display:none">cancel edit</a>
+      </div>
+    </div>
+    <div id="wl-list"></div>
+  </aside>
+
   <!-- github sync settings modal -->
   <div id="gh-veil" class="veil" role="dialog" aria-modal="true">
     <div id="gh-panel" class="panel" style="max-width:500px;width:100%;padding:40px 44px">
@@ -1443,6 +1559,16 @@
     function loadJSON(key, fallback) { try { return JSON.parse(localStorage.getItem(key)) ?? fallback; } catch (e) { return fallback; } }
     const rlog = loadJSON('readingLog', /*__RLOG_START__*/{}/*__RLOG_END__*/);   // { okey: {o,c} }
     let readQueue = loadJSON('readQueue', /*__RQ_START__*/[]/*__RQ_END__*/);     // [okey, ...]
+    let WISHLIST = loadJSON('wishlist', /*__WL_START__*/[]/*__WL_END__*/);       // [{t,a,n,added}]
+    function saveWishlist() {
+      try { localStorage.setItem('wishlist', JSON.stringify(WISHLIST)); } catch (e) { }
+      scheduleCommit();
+      renderWishlist();
+    }
+    function wishlistConsumed(title) {  // a wished-for book just landed on the shelf
+      const i = WISHLIST.findIndex(w => (w.t || '').toLowerCase() === title.toLowerCase());
+      if (i > -1) { WISHLIST.splice(i, 1); saveWishlist(); }
+    }
     function saveLog() { try { localStorage.setItem('readingLog', JSON.stringify(rlog)); } catch (e) { } scheduleCommit(); }
     function saveQueue() { try { localStorage.setItem('readQueue', JSON.stringify(readQueue)); } catch (e) { } scheduleCommit(); }
     function logOf(b) { return rlog[b.okey] || {}; }
@@ -1827,7 +1953,7 @@
     function libraryJSON() {
       return JSON.stringify({
         app: 'al-maktabah', updated: new Date().toISOString(),
-        books: BOOKS.map(bookData), readingLog: rlog, readQueue: readQueue
+        books: BOOKS.map(bookData), readingLog: rlog, readQueue: readQueue, wishlist: WISHLIST
       }, null, 2);
     }
     function setStatus(txt, isErr) {
@@ -1881,6 +2007,7 @@
       Object.keys(rlog).forEach(k => delete rlog[k]);
       Object.assign(rlog, j.readingLog || {});
       readQueue = Array.isArray(j.readQueue) ? j.readQueue : [];
+      WISHLIST = Array.isArray(j.wishlist) ? j.wishlist : [];
       remoteMode = true;
     }
     async function loadRemoteLibrary() {
@@ -1956,6 +2083,96 @@
       location.reload();
     });
 
+    /* ---------- want-to-read drawer ---------- */
+    let wlEditing = -1;
+    const wlDrawer = document.getElementById('wl-drawer');
+    function esch(s) { return String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+    function openWl() {
+      document.body.classList.add('wl-open');
+      sfx.open();
+      document.getElementById('wl-t').focus();
+    }
+    function closeWl() {
+      document.body.classList.remove('wl-open');
+      wlFormReset();
+    }
+    function wlFormReset() {
+      wlEditing = -1;
+      ['wl-t', 'wl-a', 'wl-n'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('wl-save').textContent = 'Add to list';
+      document.getElementById('wl-cancel').style.display = 'none';
+    }
+    function renderWishlist() {
+      document.getElementById('wl-count').textContent = WISHLIST.length;
+      const list = document.getElementById('wl-list');
+      if (!WISHLIST.length) {
+        list.innerHTML = '<div class="wl-empty">The waiting list is empty.<br>Add a title you intend to summarize —<br>it will wait here patiently.</div>';
+        return;
+      }
+      list.innerHTML = WISHLIST.map((w, i) => `
+        <div class="wl-row">
+          <div class="wl-num">${i + 1}.</div>
+          <div class="wl-main">
+            <div class="wl-title">${esch(w.t)}</div>
+            ${w.a ? `<div class="wl-author">${esch(w.a)}</div>` : ''}
+            ${w.n ? `<div class="wl-note">${esch(w.n)}</div>` : ''}
+            ${w.added ? `<div class="wl-date">waiting since ${fmtDate(w.added)}</div>` : ''}
+          </div>
+          <div class="wl-acts">
+            <button class="wl-act" data-act="promote" data-i="${i}" title="The summary is ready — add it to the shelf">→ shelf</button>
+            <button class="wl-act" data-act="edit" data-i="${i}">edit</button>
+            <button class="wl-act del" data-act="del" data-i="${i}">remove</button>
+          </div>
+        </div>`).join('');
+    }
+    document.getElementById('wl-tab').addEventListener('click', openWl);
+    document.getElementById('wl-tab').addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openWl(); } });
+    document.getElementById('wl-close').addEventListener('click', closeWl);
+    document.getElementById('wl-scrim').addEventListener('click', closeWl);
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeWl(); });
+    document.getElementById('wl-cancel').addEventListener('click', wlFormReset);
+    document.getElementById('wl-save').addEventListener('click', () => {
+      const t = document.getElementById('wl-t').value.trim();
+      if (!t) { document.getElementById('wl-t').focus(); return; }
+      const a = document.getElementById('wl-a').value.trim();
+      const n = document.getElementById('wl-n').value.trim();
+      if (wlEditing > -1) {
+        Object.assign(WISHLIST[wlEditing], { t, a, n });
+      } else {
+        WISHLIST.push({ t, a, n, added: new Date().toISOString() });
+      }
+      sfx.chime();
+      wlFormReset();
+      saveWishlist();
+    });
+    document.getElementById('wl-list').addEventListener('click', e => {
+      const btn = e.target.closest('.wl-act');
+      if (!btn) return;
+      const i = +btn.dataset.i, w = WISHLIST[i];
+      if (!w) return;
+      if (btn.dataset.act === 'del') {
+        WISHLIST.splice(i, 1);
+        sfx.close();
+        saveWishlist();
+      } else if (btn.dataset.act === 'edit') {
+        wlEditing = i;
+        document.getElementById('wl-t').value = w.t || '';
+        document.getElementById('wl-a').value = w.a || '';
+        document.getElementById('wl-n').value = w.n || '';
+        document.getElementById('wl-save').textContent = 'Save changes';
+        document.getElementById('wl-cancel').style.display = 'inline';
+        document.getElementById('wl-t').focus();
+      } else if (btn.dataset.act === 'promote') {
+        closeWl();
+        setTimeout(() => {
+          openAdd();
+          document.getElementById('f-title').value = w.t || '';
+          document.getElementById('f-author').value = w.a || '';
+          if (w.n) document.getElementById('f-desc').value = w.n;
+        }, 250);
+      }
+    });
+
     /* ---------- export the whole library as a publish-ready HTML file ---------- */
     function marker(n) { return '/*__' + n + '__*/'; }   // built dynamically so these tokens only exist at the real blocks
     function replaceBetween(src, name, payload) {
@@ -1991,12 +2208,13 @@
       src = replaceBetween(src, 'BOOKS', '\nconst BOOKS = ' + esc(JSON.stringify(books, null, 1)) + ';\n');
       src = replaceBetween(src, 'RLOG', esc(JSON.stringify(rlog)));
       src = replaceBetween(src, 'RQ', esc(JSON.stringify(readQueue)));
+      src = replaceBetween(src, 'WL', esc(JSON.stringify(WISHLIST)));
       downloadFile('index.html', src, 'text/html');
       sfx.chime();
     });
 
     /* ---------- export / import library data ---------- */
-    const DATA_KEYS = ['myBooks', 'bookOverrides', 'shelfOrder', 'readingLog', 'readQueue', 'lightsOff', 'soundOn'];
+    const DATA_KEYS = ['myBooks', 'bookOverrides', 'shelfOrder', 'readingLog', 'readQueue', 'wishlist', 'lightsOff', 'soundOn'];
     document.getElementById('export-data').addEventListener('click', () => {
       const out = { app: 'al-maktabah', exported: new Date().toISOString(), data: {} };
       DATA_KEYS.forEach(k => { const v = localStorage.getItem(k); if (v !== null) out.data[k] = v; });
@@ -2102,6 +2320,7 @@
         const p = PALETTES[BOOKS.length % PALETTES.length];
         const book = Object.assign({ c1: p[0], c2: p[1], tc: p[2], okey: t }, nb);
         BOOKS.push(book);
+        wishlistConsumed(t);
         scheduleCommit();
         sfx.chime();
         renderShelves();
@@ -2110,6 +2329,7 @@
         return;
       }
       const arr = loadMyBooks(); arr.push(nb); saveMyBooks(arr);
+      wishlistConsumed(t);
       const p = PALETTES[(arr.length - 1) % PALETTES.length];
       const book = Object.assign({ c1: p[0], c2: p[1], tc: p[2], mine: true, mineIndex: arr.length - 1, okey: t }, nb);
       BOOKS.push(book);
@@ -2163,6 +2383,7 @@
       await loadRemoteLibrary();        // library.json becomes the source of truth when available
       if (!remoteMode) applyOrder();    // local-order fallback for the static/offline mode
       renderShelves();
+      renderWishlist();
       lastPer = booksPerShelf();
     })();
   </script>
