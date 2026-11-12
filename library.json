@@ -1,6 +1,6 @@
 {
   "app": "al-maktabah",
-  "updated": "2026-11-12T02:46:56.701Z",
+  "updated": "2026-11-12T02:47:01.671Z",
   "books": [
     {
       "t": "Debunkery",
@@ -237,6 +237,9 @@
     },
     "Investing in U.S. Financial History": {
       "o": "2026-11-07T20:25:33.534Z"
+    },
+    "Die with Zero": {
+      "o": "2026-11-12T02:46:59.920Z"
     }
   },
   "readQueue": [],
